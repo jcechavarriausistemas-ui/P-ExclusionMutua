@@ -11,7 +11,8 @@
 - **Configuración del Entorno:** Instalación de herramientas esenciales en **Linux Mint - Cinnamon**, incluyendo `build-essential` (GCC/Make), `git` y **Obsidian** para documentación técnica.
     
 - **Sincronización de Repositorio:** Creación y clonación del repositorio de GitHub `Visualizador-de-ExclusionMutua` para trabajo colaborativo.
-    
+
+
 - **Estructura de Directorios:** Se organizó el espacio de trabajo con las siguientes carpetas:
     
     - `/src`: Código fuente en C (Capa de Hardware y OS).
@@ -22,6 +23,10 @@
         
     - `/data`: Almacenamiento de métricas (latencia, throughput, context switches).
         
+1.1- Instalamos dependencias necesarias del Codigo:
+`sudo apt update`
+`sudo apt install build-essential git python3 python3-pip gdb`
+
 
 ## 2. Definición Técnica de Mecanismos a Implementar
 
@@ -46,6 +51,28 @@ Se implementó un `Makefile` para estandarizar el proceso de construcción. Los 
 - **Flags de optimización (`-O2`)**: Necesarios para que el compilador no elimine los bucles de espera activa por considerarlos "innecesarios".
 - **Librería POSIX (`-pthread`)**: Para la gestión de hilos en Linux Mint.
 
+El makefile se crea en un archivo de texto sin formato
+por lo que es recomendado en la terminal (Linux Especificamente), escribir 
+nano Makefile -> Enter
+Copiar el siguiente Codigo, y despues Ctrl+O ( Para guardar ) y Ctrl+X para salir
+
+```
+CC=gcc
+CFLAGS=-O2 -pthread
+SRC=src/main.c
+OBJ=simulador
+
+all:
+	$(CC) $(CFLAGS) $(SRC) -o $(OBJ)
+
+clean:
+	rm -f $(OBJ)
+```
+Este queda adjunto con [[src/main.c]]
+Para hacer las pruebas correspondientes
+`make`
+`./simulador`
+para subidas a repositorios se recomienda  `make clean`antes de subir a un repositorio 
 #### 2. Implementación del Spinlock (Instrucción TSL)
 
 Se codificó el primer mecanismo de exclusión mutua en `src/main.c`.

@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "8a6ca902d25f53c1",
+        "id": "ee04d5f768399092",
         "type": "tabs",
         "children": [
           {
-            "id": "3d862ac726f113bd",
+            "id": "b4d7ca2b75ebe45c",
             "type": "leaf",
             "state": {
               "type": "markdown",
@@ -41,7 +41,7 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false
+                "autoReveal": true
               },
               "icon": "lucide-folder-closed",
               "title": "Explorador de archivos"
@@ -53,7 +53,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "tag:#___________________________________",
+                "query": "tag:#sudo",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -74,8 +74,7 @@
               "title": "Marcadores"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "horizontal",
@@ -181,13 +180,15 @@
       "bases:Crear nueva base": false
     }
   },
-  "active": "3d862ac726f113bd",
+  "active": "b4d7ca2b75ebe45c",
   "lastOpenFiles": [
+    "simulador",
+    "docs/Sesion1.md",
+    "().md",
+    "Makefile.md",
     "docs/Sesion2.md",
     "Sesion2.md",
     "Sesion1.md",
-    "docs/Sesion1.md",
-    "simulador",
     "src/main.c",
     "2026-04-25.md"
   ]
