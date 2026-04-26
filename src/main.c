@@ -1,46 +1,60 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdatomic.h>
+#include <time.h>
 #include <unistd.h>
 
-// El cerrojo atómico (Nivel Hardware)
 atomic_flag lock = ATOMIC_FLAG_INIT;
 
-void* tarea_del_hilo(void* arg) {
+void* simulation(void* arg) {
     int id = *(int*)arg;
+    struct timespec start, end;
     
-    for(int i = 0; i < 3; i++) {
-        printf("Hilo %d intentando entrar...\n", id);
+    // Abrir el archivo en modo "append" (añadir)
+    FILE *f = fopen("data/spinlock_metrics.csv", "a");
+    if (f == NULL) return NULL;
+
+    for(int i = 0; i < 10; i++) {
+        clock_gettime(CLOCK_MONOTONIC, &start); // Marca de tiempo INICIO
         
         // --- ESPERA ACTIVA (TSL) ---
-        while (atomic_flag_test_and_set(&lock)) {
-            // El hilo se queda aquí gastando ciclos de CPU
-            // Esto es lo que generará "calor" en tu simulación
-        }
+        while (atomic_flag_test_and_set(&lock)); 
         
-        // --- SECCIÓN CRÍTICA ---
-        printf(">>> Hilo %d está ADENTRO.\n", id);
-        sleep(1); // Simulamos un trabajo pesado
+        clock_gettime(CLOCK_MONOTONIC, &end); // Marca de tiempo FIN
         
-        // --- LIBERACIÓN ---
+        // Cálculo de latencia en nanosegundos
+        long latency = (end.tv_sec - start.tv_sec) * 1e9 + (end.tv_nsec - start.tv_nsec);
+        
+        // Guardar: ID_Hilo, Iteracion, Latencia_ns
+        fprintf(f, "%d, %d, %ld\n", id, i, latency);
+        
+        // Sección Crítica
+        usleep(10000); // 10ms de trabajo
+        
         atomic_flag_clear(&lock);
-        printf("Hilo %d salió y liberó el lock.\n", id);
-        
-        sleep(1); // Descanso antes de volver a pelear
+        usleep(5000); // Pequeño descanso
     }
+
+    fclose(f);
     return NULL;
 }
 
 int main() {
-    pthread_t hilos[4];
+    // Crear encabezado del CSV
+    FILE *f = fopen("data/spinlock_metrics.csv", "w");
+    fprintf(f, "Hilo_ID, Iteracion, Latencia_ns\n");
+    fclose(f);
+
+    pthread_t threads[4];
     int ids[4];
 
     for(int i = 0; i < 4; i++) {
         ids[i] = i;
-        pthread_create(&hilos[i], NULL, tarea_del_hilo, &ids[i]);
+        pthread_create(&threads[i], NULL, simulation, &ids[i]);
     }
 
-    for(int i = 0; i < 4; i++) pthread_join(hilos[i], NULL);
+    for(int i = 0; i < 4; i++) pthread_join(threads[i], NULL);
 
+    printf("Simulación terminada. Datos guardados en data/spinlock_metrics.csv\n");
     return 0;
 }
